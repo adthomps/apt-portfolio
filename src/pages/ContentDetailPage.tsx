@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { ShareButton } from "@/components/shared/ShareButton";
 import { useParams, useNavigate } from "react-router-dom";
 import SEO from "@/components/shared/SEO";
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
 
 export function ContentDetailPage() {
   const { slug } = useParams();
@@ -122,6 +124,7 @@ export function ContentDetailPage() {
           ...(item.meta.type === 'podcast' && item.meta.audioUrl ? { associatedMedia: { "@type": "AudioObject", contentUrl: item.meta.audioUrl } } : {})
         }}
       />
+      <Navigation />
       <header className="w-full bg-background">
         {item.meta.heroImage && (
           <div className="container mx-auto px-6 pt-6">
@@ -136,8 +139,14 @@ export function ContentDetailPage() {
       </header>
 
       <main className="container mx-auto px-6 py-10 max-w-5xl space-y-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">{item.meta.title}</h1>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 flex-wrap">
+            <Button variant="link" asChild>
+              <a href="/">Back to Portfolio</a>
+            </Button>
+            <span className="text-muted-foreground">/</span>
+            <h1 className="text-3xl font-bold">{item.meta.title}</h1>
+          </div>
           <Button variant="outline" onClick={backToList}>Back</Button>
         </div>
 
@@ -238,6 +247,7 @@ export function ContentDetailPage() {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }

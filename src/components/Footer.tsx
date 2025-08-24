@@ -36,9 +36,17 @@ const quickLinks = [{
 export function Footer() {
   const scrollToSection = (href: string) => {
     const sectionId = href.replace('#', '');
-    document.getElementById(sectionId)?.scrollIntoView({
-      behavior: 'smooth'
-    });
+    const onHome = typeof window !== 'undefined' && window.location.pathname === '/';
+    if (!onHome) {
+      window.location.assign(`/#${sectionId}`);
+      return;
+    }
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.location.assign(`/#${sectionId}`);
+    }
   };
   return <footer className="bg-muted/50 border-t">
       <div className="container mx-auto px-6 py-12">
@@ -62,11 +70,19 @@ export function Footer() {
             <div className="flex flex-col space-y-2">
               {quickLinks.map(link => (
                 link.href.startsWith('#') ? (
-                  <button key={link.name} onClick={() => scrollToSection(link.href)} className="text-muted-foreground hover:text-primary transition-colors text-left">
+                  <button
+                    key={link.name}
+                    onClick={() => scrollToSection(link.href)}
+                    className="text-muted-foreground hover:text-primary transition-colors text-left"
+                  >
                     {link.name}
                   </button>
                 ) : (
-                  <a key={link.name} href={link.href} className="text-muted-foreground hover:text-primary transition-colors">
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
                     {link.name}
                   </a>
                 )

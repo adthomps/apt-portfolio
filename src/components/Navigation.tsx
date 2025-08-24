@@ -26,13 +26,22 @@ export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const scrollToSection = (href: string) => {
     const sectionId = href.replace('#', '');
+    const onHome = typeof window !== 'undefined' && window.location.pathname === '/';
+    if (!onHome) {
+      // Not on home; navigate to home with hash so browser will scroll there
+      window.location.assign(`/#${sectionId}`);
+      setIsOpen(false);
+      return;
+    }
+    // On home: smooth scroll if element exists; otherwise, fallback to navigation
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth'
-      });
+      element.scrollIntoView({ behavior: 'smooth' });
+      setIsOpen(false);
+    } else {
+      window.location.assign(`/#${sectionId}`);
+      setIsOpen(false);
     }
-    setIsOpen(false);
   };
   return <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/70 supports-[backdrop-filter]:bg-background/50 border-b border-border/50">
       <div className="container mx-auto px-6 py-4">
