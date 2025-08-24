@@ -91,21 +91,21 @@ export function Footer() {
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-4">
+          {/*<div className="space-y-4">
             <h4 className="font-semibold text-foreground">Get In Touch</h4>
             <div className="space-y-2 text-muted-foreground">
               <p>john.smith@example.com</p>
               <p>+1 (555) 123-4567</p>
               <p>San Francisco, CA</p>
             </div>
-          </div>
+          </div>*/}
         </div>
 
         <Separator className="my-8" />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} John Smith. All rights reserved.
+            © {new Date().getFullYear()} Adam Thompson. All rights reserved.
           </p>
           <p className="text-muted-foreground text-sm flex items-center gap-1">
             Built with using Cloudflare + React + Vite + Tailwind CSS + Typescript + shadcn-ui and AI.
