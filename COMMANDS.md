@@ -81,3 +81,8 @@ pnpm deploy
 
 - `pnpm build` automatically runs the sitemap generator via `prebuild`.
 - The Blog section respects frontmatter `Status: scheduled|published|archived` and `VITE_RECENT_WINDOW_DAYS`.
+
+## CI notes (GitHub Actions)
+
+- CI uses Corepack to provision `pnpm` (pinned via `package.json#packageManager`) and caches dependencies with `actions/setup-node` (`cache: 'pnpm'`).
+- If you hit transient 429s from the npm registry, CI sets generous retry/backoff for `pnpm` fetches. Re-run the job; it will usually succeed on retry.
