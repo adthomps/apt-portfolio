@@ -131,43 +131,6 @@ Per-page meta tags are handled by `src/components/shared/SEO.tsx`, used in:
 
 `public/robots.txt` references the sitemap; ensure the URL matches your domain.
 
-## GitHub + Cloudflare Setup
-
-This repo is pre-wired for CI and Cloudflare Workers deploys.
-
-1. Environment
-
-- Copy `.env.example` to `.env` and set:
-  - `SITE_URL` to your public domain or Workers.dev URL
-  - Optional: `VITE_RECENT_WINDOW_DAYS` (default 60)
-  - Optional: `PW_BASE_URL` for Playwright (defaults to production; CI sets localhost)
-
-1. GitHub Secrets (Repository Settings → Secrets and variables → Actions)
-
-- `CLOUDFLARE_ACCOUNT_ID` — your account ID
-- `CLOUDFLARE_API_TOKEN` — API token with Workers deploy permissions (scoped to your account)
-
-1. CI workflow
-
-- File: `.github/workflows/ci.yml`
-- Runs lint, typecheck, unit tests, and Playwright E2E against a local dev server.
-- Override base URL with `PW_BASE_URL` if needed.
-
-1. Deploy workflow
-
-- File: `.github/workflows/deploy.yml`
-- On push to `main`, deploys via `cloudflare/wrangler-action@v3` using `wrangler.toml`.
-
-1. Playwright base URL
-
-- Configure by env: `PW_BASE_URL=http://localhost:5173 pnpm exec playwright test`
-- If unset, default is your Workers.dev URL.
-
-Notes
-
-- For Pages deploys instead of Workers, switch the action command per Cloudflare docs.
-- Do not commit real secrets; use GitHub Secrets or Wrangler Secrets for runtime bindings.
-
 ### Content Status & Recency
 
 - Recent window is configurable via `VITE_RECENT_WINDOW_DAYS` (default `60`).
