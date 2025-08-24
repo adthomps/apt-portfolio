@@ -1,0 +1,12 @@
+name = "apt-portfolio"
+main = "src/api/server.ts"
+account_id = "257b7e468437a1105470c725617d9268"
+workers_dev = true
+compatibility_date = "2025-08-17"
+
+[assets]
+directory = "dist"
+binding = "ASSETS"
+
+[build]
+command = "pnpm build"
