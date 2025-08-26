@@ -5,7 +5,7 @@ Summary: A user-centric fitness platform built with Lovable AI. Features dynamic
 Tags: ["Lovable", "React", "TailwindCSS"]
 Promo Image: /media/projects/uiux/project-fitness-lovable.png
 UiMock: https://apt-fitness-ai-concept.lovable.app/
-Github: 
+Github: https://github.com/adthomps/apt-fitness-ai-concept-lovable
 
 ---
 

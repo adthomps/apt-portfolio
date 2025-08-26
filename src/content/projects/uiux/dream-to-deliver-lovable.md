@@ -5,7 +5,7 @@ Summary: A conceptual experience dashboard powered by Lovable, visualizing the j
 Tags: ["Lovable", "React", "TailwindCSS"]
 Promo Image: /media/projects/uiux/project-dream-lovable.png
 UiMock: https://apt-dream-to-deliver.lovable.app/
-GitHub: 
+GitHub: https://github.com/adthomps/apt-dream-to-deliver-lovable
 
 ---
 

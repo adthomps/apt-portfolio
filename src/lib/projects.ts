@@ -9,6 +9,8 @@ export interface ProjectMeta {
   promoImage?: string; // public path
   github?: string;
   demo?: string;
+  uiMock?: string;
+  isLive?: boolean;
 }
 
 export interface ProjectItem {
@@ -48,7 +50,13 @@ type ProjectFrontmatter = Partial<
     | "Github"
     | "github"
     | "Demo"
-    | "demo",
+    | "demo"
+    | "UiMock"
+    | "uiMock"
+    | "Live"
+    | "live"
+    | "Environment"
+    | "environment",
     unknown
   >
 >;
@@ -59,15 +67,27 @@ export function getAllProjects(): ProjectItem[] {
     const data: ProjectFrontmatter = parsed.attributes || {};
     const content: string = parsed.body || "";
 
+    const coerceLive = (v: unknown): boolean | undefined => {
+      if (typeof v === 'boolean') return v;
+      if (typeof v === 'string') {
+        const s = v.trim().toLowerCase();
+        if (s === 'true' || s === '1' || s === 'live' || s === 'production' || s === 'prod') return true;
+        if (s === 'false' || s === '0' || s === 'dev' || s === 'development' || s === 'staging') return false;
+      }
+      return undefined;
+    };
+
     const meta: ProjectMeta = {
       title: data.Title || data.title || toSlug(path),
       date: data.Date || data.date || new Date().toISOString(),
       summary: data.Summary || data.summary || "",
       category: data.Category || data.category || undefined,
-  tags: (data.Tags as string[] | undefined) || (data.tags as string[] | undefined) || [],
+      tags: (data.Tags as string[] | undefined) || (data.tags as string[] | undefined) || [],
       promoImage: data["Promo Image"] || data.promoImage || data.promo || undefined,
       github: data.GitHub || data.Github || data.github || undefined,
       demo: data.Demo || data.demo || undefined,
+      uiMock: data.UiMock || data.uiMock || undefined,
+      isLive: coerceLive(data.Live) ?? coerceLive(data.live) ?? coerceLive(data.Environment) ?? coerceLive(data.environment),
     } as ProjectMeta;
 
     return {

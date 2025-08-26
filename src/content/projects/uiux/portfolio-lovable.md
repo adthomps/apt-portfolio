@@ -5,7 +5,7 @@ Summary: A personal portfolio layout crafted in Lovable. Includes sections for f
 Tags: ["Lovable", "React", "TailwindCSS"]
 Promo Image: /media/projects/uiux/project-portoflio-lovable.png
 UiMock: https://apt-portfolio-concept.lovable.app/
-GitHub: 
+GitHub: https://github.com/adthomps/apt-portfolio-concept-lovable
 
 ---
 

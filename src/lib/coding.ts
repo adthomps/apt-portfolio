@@ -11,6 +11,7 @@ export interface CodingMeta {
   demo?: string;
   uiMock?: string;
   status?: string;
+  isLive?: boolean;
 }
 
 export interface CodingItem {
@@ -55,7 +56,11 @@ type CodingFrontmatter = Partial<
     | "UiMock"
     | "uiMock"
     | "Status"
-    | "status",
+    | "status"
+    | "Live"
+    | "live"
+    | "Environment"
+    | "environment",
     unknown
   >
 >;
@@ -66,17 +71,28 @@ export function getAllCodingProjects(): CodingItem[] {
     const data: CodingFrontmatter = parsed.attributes || {};
     const content: string = parsed.body || "";
 
+    const coerceLive = (v: unknown): boolean | undefined => {
+      if (typeof v === 'boolean') return v;
+      if (typeof v === 'string') {
+        const s = v.trim().toLowerCase();
+        if (s === 'true' || s === '1' || s === 'live' || s === 'production' || s === 'prod') return true;
+        if (s === 'false' || s === '0' || s === 'dev' || s === 'development' || s === 'staging') return false;
+      }
+      return undefined;
+    };
+
     const meta: CodingMeta = {
       title: data.Title || data.title || toSlug(path),
       date: data.Date || data.date || new Date().toISOString(),
       summary: data.Summary || data.summary || "",
       category: data.Category || data.category || undefined,
-  tags: (data.Tags as string[] | undefined) || (data.tags as string[] | undefined) || [],
+      tags: (data.Tags as string[] | undefined) || (data.tags as string[] | undefined) || [],
       promoImage: data["Promo Image"] || data.promoImage || data.promo || undefined,
       github: data.GitHub || data.Github || data.github || undefined,
       demo: data.LiveDemo || data.Demo || data.demo || undefined,
       uiMock: data.UiMock || data.uiMock || undefined,
       status: data.Status || data.status || undefined,
+      isLive: coerceLive(data.Live) ?? coerceLive(data.live) ?? coerceLive(data.Environment) ?? coerceLive(data.environment),
     } as CodingMeta;
 
     return {

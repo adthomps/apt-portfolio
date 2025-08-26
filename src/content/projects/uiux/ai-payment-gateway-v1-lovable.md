@@ -5,7 +5,7 @@ Summary: The initial AI-assisted payment platform prototype built in Lovable. Fo
 Tags: ["Lovable", "React", "TailwindCSS"]
 Promo Image: /media/projects/uiux/project-payment-gateway-v1-lovable.png
 UiMock: https://api-gateway-concept1.lovable.app/
-GitHub: 
+GitHub: https://github.com/adthomps/api-gateway-concept1-lovable
 
 ---
 

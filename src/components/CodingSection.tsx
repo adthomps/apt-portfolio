@@ -3,13 +3,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExpandableTags } from "@/components/ui/expandable-tags";
-import { Github, ExternalLink } from "lucide-react";
+import { Github, ExternalLink, Figma, MonitorSmartphone } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { FilterGroup } from "@/components/shared/FilterGroup";
 import { ShareButton } from "@/components/shared/ShareButton";
 import { MediaBanner } from "@/components/shared/MediaBanner";
 import { getAllCodingProjects } from "@/lib/coding";
+import { Link } from "react-router-dom";
+import { m } from "motion/react";
 
 
 export function CodingSection() {
@@ -19,12 +21,13 @@ export function CodingSection() {
     title: p.meta.title,
     description: p.meta.summary,
     tags: p.meta.tags || [],
-    github: p.meta.github || "#",
-    demo: p.meta.demo || "#",
-    uiMock: p.meta.uiMock || "",
-    image: p.meta.promoImage || "/placeholder.svg",
+    github: p.meta.github?.trim() || undefined,
+    demo: p.meta.demo?.trim() || undefined,
+    uiMock: p.meta.uiMock?.trim() || undefined,
+  image: p.meta.promoImage,
     category: p.meta.category || "General",
     status: p.meta.status || "",
+    isLive: p.meta.isLive,
   })), []);
 
 
@@ -108,23 +111,44 @@ export function CodingSection() {
         </div>
 
         <TooltipProvider delayDuration={200}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <m.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+            variants={{
+              hidden: { opacity: 1 },
+              show: { opacity: 1, transition: { staggerChildren: 0.06 } },
+            }}
+          >
             {filtered.map((project) => (
-              <Card key={project.slug} className="group overflow-hidden hover:shadow-glow transition-all duration-300 h-full">
-                  <MediaBanner
-                    src={project.image}
-                    alt={project.title}
-                    fallbackText="Coding Promo"
-                  />
+              <m.div
+                key={project.slug}
+                variants={{ hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } }}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+              >
+              <Card className="group overflow-hidden hover:shadow-glow transition-all duration-300 h-full">
+                  {project.image && (
+                    <Link to={`/code/${project.slug}`} aria-label={`Open ${project.title} details`}>
+                      <MediaBanner
+                        src={project.image}
+                        alt={project.title}
+                        fallbackText="Coding Promo"
+                      />
+                    </Link>
+                  )}
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <CardTitle className="text-lg clamp-2 md:truncate break-words" title={project.title}>
-                              {project.title}
-                            </CardTitle>
+                            <Link to={`/code/${project.slug}`} className="hover:underline">
+                              <CardTitle className="text-lg clamp-2 md:truncate break-words" title={project.title}>
+                                {project.title}
+                              </CardTitle>
+                            </Link>
                           </TooltipTrigger>
                           <TooltipContent side="top" align="start">{project.title}</TooltipContent>
                         </Tooltip>
@@ -160,33 +184,76 @@ export function CodingSection() {
                       <ExpandableTags tags={project.tags} variant="outline" size="sm" maxVisible={3} />
                     </div>
 
-                    <div className="pt-2 flex gap-2">
-                      <Button asChild variant="outline" size="sm" className="flex-1">
-                        <a href={project.github || "#"} target="_blank" rel="noopener noreferrer">
-                          <Github className="h-3 w-3 mr-2" />
-                          Source
-                        </a>
-                      </Button>
-                      <Button asChild size="sm" className="flex-1">
-                        <a href={project.demo} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-3 w-3 mr-2" />
-                          Demo
-                        </a>
-                      </Button>
-                      {project.uiMock && (
-                        <Button asChild size="sm" className="flex-1" variant="ghost">
-                          <a href={project.uiMock} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-3 w-3 mr-2" />
-                            UI Mock
-                          </a>
-                        </Button>
-                      )}
+                    {(project.github || project.demo || project.uiMock) && (
+                      <div className="pt-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        {project.github && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button asChild variant="outline" size="sm" className="w-full">
+                                <a href={project.github} target="_blank" rel="noopener noreferrer">
+                                  <Github className="h-3 w-3 mr-2" />
+                                  Source
+                                </a>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Opens GitHub</TooltipContent>
+                          </Tooltip>
+                        )}
+                        {project.demo && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button asChild size="sm" className="w-full">
+                                <a href={project.demo} target="_blank" rel="noopener noreferrer">
+                                  <ExternalLink className="h-3 w-3 mr-2" />
+                                  {(project.isLive ?? /\blive|prod|production\b/i.test(project.demo)) ? 'Live' : 'Demo'}
+                                </a>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              {(project.isLive ?? /\blive|prod|production\b/i.test(project.demo)) ? 'Opens Live' : 'Opens Demo'}
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+                        {project.uiMock && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button asChild size="sm" className="w-full" variant="ghost">
+                                <a href={project.uiMock} target="_blank" rel="noopener noreferrer">
+                                  {/^https?:\/\/[^\s]*figma\.com\//i.test(project.uiMock) ? (
+                                    <Figma className="h-3 w-3 mr-2" />
+                                  ) : /lovable\.app/i.test(project.uiMock) ? (
+                                    <MonitorSmartphone className="h-3 w-3 mr-2" />
+                                  ) : (
+                                    <ExternalLink className="h-3 w-3 mr-2" />
+                                  )}
+                                  UI Mock
+                                </a>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              {/^https?:\/\/[^\s]*figma\.com\//i.test(project.uiMock) ? "Opens in Figma" : /lovable\.app/i.test(project.uiMock) ? "Opens in Lovable" : "Opens link"}
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+                      </div>
+                    )}
+                    {/* Optional share button for coding projects */}
+                    <div className="pt-2">
+                      <ShareButton
+                        title={project.title}
+                        text={project.description}
+                        shareType="project"
+                        slug={`code/${project.slug}`}
+                        size="sm"
+                        variant="outline"
+                      />
                     </div>
                   </div>
                 </CardContent>
               </Card>
+              </m.div>
             ))}
-          </div>
+          </m.div>
         </TooltipProvider>
       </div>
     </section>

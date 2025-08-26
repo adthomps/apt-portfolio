@@ -6,16 +6,19 @@ interface MediaBannerProps {
   sizes?: string;
   alt: string;
   className?: string;
+  fallbackText?: string;
 }
 
-export function MediaBanner({ src, srcSet, sizes, alt, className }: MediaBannerProps) {
-  if (!src) return null;
+export function MediaBanner({ src, srcSet, sizes, alt, className, fallbackText }: MediaBannerProps) {
+  // Always render wrapper to allow fallback when image fails
+  const [errored, setErrored] = React.useState(false);
+  const showImage = !!src && !errored;
   return (
     <div
       className={`aspect-video w-full rounded-md overflow-hidden bg-gray-100 flex items-center justify-center ${className || ""}`}
       style={{ minHeight: 120 }}
     >
-      {src ? (
+      {showImage && (
         <img
           src={src}
           srcSet={srcSet}
@@ -24,19 +27,12 @@ export function MediaBanner({ src, srcSet, sizes, alt, className }: MediaBannerP
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
           loading="lazy"
           decoding="async"
-          onError={e => {
-            // Hide image and show fallback on error
-            const target = e.target as HTMLImageElement;
-            target.style.display = "none";
-            if (target.nextSibling) {
-              (target.nextSibling as HTMLElement).style.display = "flex";
-            }
-          }}
+          onError={() => setErrored(true)}
         />
-      ) : null}
-      {!src && (
-        <span className="text-3xl text-gray-400 w-full h-full flex items-center justify-center">
-          {"Blog Promo"}
+      )}
+      {!showImage && (
+        <span className="text-muted-foreground/70 text-base sm:text-lg md:text-xl w-full h-full flex items-center justify-center p-4 text-center">
+          {fallbackText || alt || "Image unavailable"}
         </span>
       )}
     </div>

@@ -17,6 +17,9 @@ import LegacyDPMTestPage from "./pages/tests/LegacyDPMTestPage";
 import LegacySimpleCheckoutTestPage from "./pages/tests/LegacySimpleCheckoutTestPage";
 import { ContentDetailPage } from "./pages/ContentDetailPage";
 import SitemapPage from "./pages/SitemapPage";
+import UiuxProjectDetailPage from "./pages/UiuxProjectDetailPage";
+import CodingProjectDetailPage from "./pages/CodingProjectDetailPage";
+import MotionProvider from "@/components/MotionProvider";
 
 const queryClient = new QueryClient();
 
@@ -26,15 +29,18 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <Routes>
+        <MotionProvider>
+          <Toaster />
+          <Sonner />
+          <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/blog/:slug" element={<ContentDetailPage />} />
           <Route path="/podcast/:slug" element={<ContentDetailPage />} />
           <Route path="/guide/:slug" element={<ContentDetailPage />} />
           <Route path="/sitemap" element={<SitemapPage />} />
+          <Route path="/uiux/:slug" element={<UiuxProjectDetailPage />} />
+          <Route path="/code/:slug" element={<CodingProjectDetailPage />} />
           <Route path="/test-acceptjs-production" element={<AcceptJsTestPage environment="production" />} />
           <Route path="/test-acceptjs-sandbox" element={<AcceptJsTestPage environment="sandbox" />} />
           <Route path="/test-enhanced-acceptjs" element={<EnhancedAcceptJsTestPage environment="sandbox" />} />
@@ -52,7 +58,8 @@ const App = () => {
           <Route path="/test-dpm-sandbox" element={<LegacyDPMTestPage environment="sandbox" />} />
           <Route path="/test-simplecheckout-production" element={<LegacySimpleCheckoutTestPage environment="production" />} />
           <Route path="/test-simplecheckout-sandbox" element={<LegacySimpleCheckoutTestPage environment="sandbox" />} />
-        </Routes>
+          </Routes>
+        </MotionProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

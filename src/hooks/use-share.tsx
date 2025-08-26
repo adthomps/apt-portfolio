@@ -1,7 +1,7 @@
 import { useToast } from "@/hooks/use-toast";
 
 
-export type ShareType = "section" | "blog" | "podcast" | "guide";
+export type ShareType = "section" | "blog" | "podcast" | "guide" | "project";
 
 interface ShareData {
   title: string;
@@ -19,12 +19,19 @@ export function useShare() {
     if (!type || !slug) return "";
     const origin = window.location.origin;
     switch (type) {
+      case "section":
+        // Share to a page section like #projects or #coding
+        return `${origin}/#${slug}`;
       case "blog":
         return `${origin}/blog/${slug}`;
       case "podcast":
         return `${origin}/podcast/${slug}`;
       case "guide":
         return `${origin}/guide/${slug}`;
+      case "project":
+        // For project sharing, allow deep link paths like "uiux/my-project" or "code/my-tool".
+        // If slug contains a '/', treat it as a relative path; otherwise fall back to section anchor.
+        return slug.includes('/') ? `${origin}/${slug}` : `${origin}/#${slug || "projects"}`;
       default:
         return "";
     }
@@ -35,7 +42,7 @@ export function useShare() {
     if (!url) {
       toast({
         title: "Share unavailable",
-        description: "Sharing is only available for blogs, podcasts, and guides.",
+        description: "Sharing is available for blogs, podcasts, guides, and projects.",
         variant: "destructive",
       });
       return;

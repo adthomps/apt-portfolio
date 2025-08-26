@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "lucide-react";
+import { m } from "motion/react";
 const heroBackground = "/media/branding/hero-bg.png";
 const profileAvatar = "/media/profile/avatar.png";
 const typewriterPhrases = [
@@ -64,22 +65,48 @@ export function HeroSection() {
             </Avatar>
             
             <div className="flex-1 text-left">
-              <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4 animate-fade-in-up">Adam Thompson</h1>
+              <m.h1
+                className="text-4xl md:text-6xl font-bold text-foreground mb-4"
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+              >
+                Adam Thompson
+              </m.h1>
               
-              <div className="text-xl md:text-2xl text-muted-foreground mb-8 h-8 flex items-center">
+              <m.div
+                className="text-xl md:text-2xl text-muted-foreground mb-8 h-8 flex items-center"
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.25, ease: "easeOut", delay: 0.05 }}
+              >
                 <span className="mr-1">I'm a </span>
                 <span className="text-primary font-semibold min-w-[120px]">
                   {displayText}
                   <span className="animate-blink">|</span>
                 </span>
-              </div>
+              </m.div>
               
-              <p className="text-lg text-muted-foreground mb-8 animate-fade-in-up animation-delay-200">
+              <m.p
+                className="text-lg text-muted-foreground mb-8"
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.25, ease: "easeOut", delay: 0.1 }}
+              >
                 Crafting digital experiences through code and capturing moments through the lens. 
                 Welcome to my creative journey.
-              </p>
+              </m.p>
               
-              <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up animation-delay-400">
+              <m.div
+                className="flex flex-col sm:flex-row gap-4"
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.25, ease: "easeOut", delay: 0.15 }}
+              >
                 <Button size="lg" className="shadow-elegant hover:shadow-glow transition-all duration-300" onClick={() => scrollToSection('projects')}>
                   View My Work
                 </Button>
@@ -87,7 +114,7 @@ export function HeroSection() {
                   <User className="h-4 w-4 mr-2" />
                   View Profile
                 </Button>
-              </div>
+              </m.div>
             </div>
           </div>
         </Card>

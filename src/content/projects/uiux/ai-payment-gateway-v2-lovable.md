@@ -5,7 +5,7 @@ Summary: An enhanced iteration of the AI Payment Gateway prototype, featuring st
 Tags: ["Lovable", "React", "TailwindCSS"]
 Promo Image: /media/projects/uiux/project-payment-gateway-v2-lovable.png
 UiMock: https://api-gateway-concept2.lovable.app/
-GitHub: 
+GitHub: https://github.com/adthomps/api-gateway-concept2-lovable
 
 ---
 
