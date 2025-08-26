@@ -6,9 +6,9 @@ Status: POC
 Category: Cloud
 Tags: ["Cloudflare", "OpenAI", "Hono", "TypeScript", "Bootstrap"]
 Promo Image: /media/coding/ai-analysis.png
-UiMock: https://ai-transact-analyzer.lovable.app/
-LiveDemo: https://ai-transactionlookup.pages.dev/index.html
 GitHub: https://github.com/adthomps
+LiveDemo: https://ai-transactionlookup.pages.dev/index.html
+
 ---
 
 ## Summary

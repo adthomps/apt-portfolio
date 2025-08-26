@@ -26,17 +26,35 @@ import { m } from "motion/react";
 
 const rawProjects = getAllUiuxProjects();
 
-const projects = rawProjects.map((p) => ({
-  slug: p.slug,
-  title: p.meta.title,
-  description: p.meta.summary,
-  tags: p.meta.tags || [],
-  github: p.meta.github?.trim() || undefined,
-  demo: p.meta.demo?.trim() || undefined,
-  uiMock: p.meta.uiMock?.trim() || undefined,
-  image: p.meta.promoImage,
-  isLive: p.meta.isLive,
-}));
+const projects = rawProjects.map((p) => {
+  // Robustly extract figma and lovable links from all possible keys
+  const figma = p.meta.figma?.trim()
+    || p.meta["UiMock-Figma"]?.trim()
+    || p.meta["UiMock_Figma"]?.trim()
+    || p.meta["UiMock - Figma"]?.trim()
+    || p.meta["UiMock_FIGMA"]?.trim()
+    || undefined;
+  const lovable = p.meta.lovable?.trim()
+    || p.meta["UiMock-Lovable"]?.trim()
+    || p.meta["UiMock_Lovable"]?.trim()
+    || p.meta["UiMock - Lovable"]?.trim()
+    || p.meta["UiMock_LOVABLE"]?.trim()
+    || undefined;
+  return {
+    slug: p.slug,
+    title: p.meta.title,
+    description: p.meta.summary,
+    tags: p.meta.tags || [],
+    github: p.meta.github?.trim() || undefined,
+    demo: p.meta.demo?.trim() || undefined,
+    figma,
+    lovable,
+    image: p.meta.promoImage,
+    isLive: p.meta.isLive,
+    // Fallbacks for edge cases
+    _rawMeta: p.meta,
+  };
+});
 
 export function ProjectsSection() {
   const categories = React.useMemo(() => {
@@ -44,9 +62,8 @@ export function ProjectsSection() {
     projects.forEach((p) => {
       const t = p.tags || [];
       if (t.includes("Figma Make")) set.add("Figma Make");
-      else if (t.includes("Lovable") || t.includes("Lovable Make"))
-        set.add("Lovable");
-      else set.add("General");
+      if (t.includes("Lovable") || t.includes("Lovable Make")) set.add("Lovable");
+      if (!t.includes("Figma Make") && !t.includes("Lovable") && !t.includes("Lovable Make")) set.add("General");
     });
     return Array.from(set).sort();
   }, []);
@@ -62,18 +79,21 @@ export function ProjectsSection() {
   );
   const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
 
-  const getCategory = (p: (typeof projects)[number]) => {
+  // Returns all matching categories for a project (multi-category support)
+  const getCategories = (p: (typeof projects)[number]) => {
     const t = p.tags || [];
-    if (t.includes("Figma Make")) return "Figma Make";
-    if (t.includes("Lovable") || t.includes("Lovable Make")) return "Lovable";
-    return "General";
+    const cats: string[] = [];
+    if (t.includes("Figma Make")) cats.push("Figma Make");
+    if (t.includes("Lovable") || t.includes("Lovable Make")) cats.push("Lovable");
+    if (!t.includes("Figma Make") && !t.includes("Lovable") && !t.includes("Lovable Make")) cats.push("General");
+    return cats;
   };
 
   const filtered = React.useMemo(() => {
     return projects.filter((p) => {
-      const cat = getCategory(p);
+      const cats = getCategories(p);
       const catOk = selectedCategories.length
-        ? selectedCategories.includes(cat)
+        ? cats.some((cat) => selectedCategories.includes(cat))
         : true;
       const tagsOk = selectedTags.length
         ? selectedTags.every((t) => p.tags.includes(t))
@@ -150,15 +170,13 @@ export function ProjectsSection() {
               <Card
                 className="group overflow-hidden hover:shadow-glow transition-all duration-300 hover:-translate-y-2"
               >
-                {project.image && (
-                  <Link to={`/uiux/${project.slug}`} aria-label={`Open ${project.title} details`}>
-                    <MediaBanner
-                      src={project.image}
-                      alt={project.title}
-                      fallbackText="Project Promo"
-                    />
-                  </Link>
-                )}
+                <Link to={`/uiux/${project.slug}`} aria-label={`Open ${project.title} details`}>
+                  <MediaBanner
+                    src={project.image || "/placeholder.svg"}
+                    alt={project.title}
+                    fallbackText={project.image ? "Project Promo" : "No image available"}
+                  />
+                </Link>
 
                 <CardHeader>
                   <Tooltip>
@@ -183,9 +201,11 @@ export function ProjectsSection() {
 
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {getCategory(project)}
-                    </Badge>
+                    {getCategories(project).map((cat) => (
+                      <Badge key={cat} variant="secondary" className="text-xs">
+                        {cat}
+                      </Badge>
+                    ))}
                   </div>
                   <ExpandableTags
                     tags={project.tags}
@@ -194,70 +214,34 @@ export function ProjectsSection() {
                     maxVisible={3}
                   />
 
-                  {(project.github || project.demo || project.uiMock) && (
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {project.github && (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button asChild size="sm" className="w-full">
-                              <a
-                                href={project.github}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                  {(project.figma || project._rawMeta?.figma || project.lovable || project._rawMeta?.lovable) && (
+                    <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                      {/* Show both Figma and Lovable buttons if both are present */}
+                      {[{ type: "figma", url: project.figma || project._rawMeta?.figma }, { type: "lovable", url: project.lovable || project._rawMeta?.lovable }]
+                        .filter(({ url }) => !!url)
+                        .map(({ type, url }) => (
+                          <Tooltip key={type}>
+                            <TooltipTrigger asChild>
+                              <Button
+                                asChild
+                                variant={type === "figma" ? "outline" : "default"}
+                                size="lg"
+                                className="w-full rounded-md flex items-center justify-center font-medium text-base border-2"
+                                aria-label={`Open ${type.charAt(0).toUpperCase() + type.slice(1)} prototype`}
                               >
-                                <Github className="h-4 w-4 mr-2" />
-                                Code
-                              </a>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Opens GitHub</TooltipContent>
-                        </Tooltip>
-                      )}
-                      {project.demo && (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              asChild
-                              variant="outline"
-                              size="sm"
-                              className="w-full"
-                            >
-                              <a
-                                href={project.demo}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <ExternalLink className="h-4 w-4 mr-2" />
-                                {(project.isLive ?? /\blive|prod|production\b/i.test(project.demo)) ? 'Live' : 'Demo'}
-                              </a>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            {(project.isLive ?? /\blive|prod|production\b/i.test(project.demo)) ? 'Opens Live' : 'Opens Demo'}
-                          </TooltipContent>
-                        </Tooltip>
-                      )}
-                      {project.uiMock && (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button asChild size="sm" className="w-full" variant="ghost">
-                              <a href={project.uiMock} target="_blank" rel="noopener noreferrer">
-                                {/^https?:\/\/[^\s]*figma\.com\//i.test(project.uiMock) ? (
-                                  <Figma className="h-4 w-4 mr-2" />
-                                ) : /lovable\.app/i.test(project.uiMock) ? (
-                                  <MonitorSmartphone className="h-4 w-4 mr-2" />
-                                ) : (
-                                  <ExternalLink className="h-4 w-4 mr-2" />
-                                )}
-                                UI Mock
-                              </a>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            {/^https?:\/\/[^\s]*figma\.com\//i.test(project.uiMock) ? "Opens in Figma" : /lovable\.app/i.test(project.uiMock) ? "Opens in Lovable" : "Opens link"}
-                          </TooltipContent>
-                        </Tooltip>
-                      )}
+                                <a href={url} target="_blank" rel="noopener noreferrer">
+                                  {type === "figma" ? (
+                                    <Figma className="h-5 w-5 mr-2" />
+                                  ) : (
+                                    <span className="mr-2"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 17.5C10 17.5 2.5 11.25 2.5 7.5C2.5 4.75 4.75 2.5 7.5 2.5C9.16667 2.5 10 4.16667 10 4.16667C10 4.16667 10.8333 2.5 12.5 2.5C15.25 2.5 17.5 4.75 17.5 7.5C17.5 11.25 10 17.5 10 17.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
+                                  )}
+                                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                                </a>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>{`Opens in ${type.charAt(0).toUpperCase() + type.slice(1)}`}</TooltipContent>
+                          </Tooltip>
+                        ))}
                     </div>
                   )}
                   {/* Share button for project deep link */}

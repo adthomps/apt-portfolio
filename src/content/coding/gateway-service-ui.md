@@ -8,7 +8,6 @@ Tags: ["Cloudflare", "React", "TypeScript", "Tailwind"]
 Promo Image: /media/coding/cloud-ui.png
 GitHub: https://github.com/adthomps
 LiveDemo: https://apt-gateway-prototype.pages.dev/
-UiMock: https://api-gateway-concept1.lovable.app/
 
 ---
 

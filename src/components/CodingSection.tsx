@@ -16,19 +16,23 @@ import { m } from "motion/react";
 
 export function CodingSection() {
 
-  const allProjects = React.useMemo(() => getAllCodingProjects().map((p) => ({
-    slug: p.slug,
-    title: p.meta.title,
-    description: p.meta.summary,
-    tags: p.meta.tags || [],
-    github: p.meta.github?.trim() || undefined,
-    demo: p.meta.demo?.trim() || undefined,
-    uiMock: p.meta.uiMock?.trim() || undefined,
-  image: p.meta.promoImage,
-    category: p.meta.category || "General",
-    status: p.meta.status || "",
-    isLive: p.meta.isLive,
-  })), []);
+  const allProjects = React.useMemo(() => getAllCodingProjects().map((p) => {
+    // Robustly read GitHub and LiveDemo fields, fallback for missing
+    const github = p.meta.github?.trim() || undefined;
+    const demo = p.meta.demo?.trim() || undefined;
+    return {
+      slug: p.slug,
+      title: p.meta.title,
+      description: p.meta.summary,
+      tags: p.meta.tags || [],
+      github,
+      demo,
+      image: p.meta.promoImage,
+      category: p.meta.category || "General",
+      status: p.meta.status || "",
+      isLive: p.meta.isLive,
+    };
+  }), []);
 
 
   const categories = React.useMemo(() => {
@@ -129,15 +133,13 @@ export function CodingSection() {
                 whileTap={{ scale: 0.99 }}
               >
               <Card className="group overflow-hidden hover:shadow-glow transition-all duration-300 h-full">
-                  {project.image && (
-                    <Link to={`/code/${project.slug}`} aria-label={`Open ${project.title} details`}>
-                      <MediaBanner
-                        src={project.image}
-                        alt={project.title}
-                        fallbackText="Coding Promo"
-                      />
-                    </Link>
-                  )}
+                  <Link to={`/code/${project.slug}`} aria-label={`Open ${project.title} details`}>
+                    <MediaBanner
+                      src={project.image || "/placeholder.svg"}
+                      alt={project.title}
+                      fallbackText={project.image ? "Coding Promo" : "No image available"}
+                    />
+                  </Link>
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -184,14 +186,20 @@ export function CodingSection() {
                       <ExpandableTags tags={project.tags} variant="outline" size="sm" maxVisible={3} />
                     </div>
 
-                    {(project.github || project.demo || project.uiMock) && (
-                      <div className="pt-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {(project.github || project.demo) && (
+                      <div className="pt-2 flex flex-col sm:flex-row gap-3">
                         {project.github && (
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button asChild variant="outline" size="sm" className="w-full">
+                              <Button
+                                asChild
+                                variant="outline"
+                                size="lg"
+                                className="w-full rounded-md flex items-center justify-center font-medium text-base border-2"
+                                aria-label="Open GitHub source"
+                              >
                                 <a href={project.github} target="_blank" rel="noopener noreferrer">
-                                  <Github className="h-3 w-3 mr-2" />
+                                  <Github className="h-5 w-5 mr-2" />
                                   Source
                                 </a>
                               </Button>
@@ -202,36 +210,21 @@ export function CodingSection() {
                         {project.demo && (
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button asChild size="sm" className="w-full">
+                              <Button
+                                asChild
+                                variant="default"
+                                size="lg"
+                                className="w-full rounded-md flex items-center justify-center font-medium text-base"
+                                aria-label="Open Live Demo"
+                              >
                                 <a href={project.demo} target="_blank" rel="noopener noreferrer">
-                                  <ExternalLink className="h-3 w-3 mr-2" />
+                                  <ExternalLink className="h-5 w-5 mr-2" />
                                   {(project.isLive ?? /\blive|prod|production\b/i.test(project.demo)) ? 'Live' : 'Demo'}
                                 </a>
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
                               {(project.isLive ?? /\blive|prod|production\b/i.test(project.demo)) ? 'Opens Live' : 'Opens Demo'}
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
-                        {project.uiMock && (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button asChild size="sm" className="w-full" variant="ghost">
-                                <a href={project.uiMock} target="_blank" rel="noopener noreferrer">
-                                  {/^https?:\/\/[^\s]*figma\.com\//i.test(project.uiMock) ? (
-                                    <Figma className="h-3 w-3 mr-2" />
-                                  ) : /lovable\.app/i.test(project.uiMock) ? (
-                                    <MonitorSmartphone className="h-3 w-3 mr-2" />
-                                  ) : (
-                                    <ExternalLink className="h-3 w-3 mr-2" />
-                                  )}
-                                  UI Mock
-                                </a>
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              {/^https?:\/\/[^\s]*figma\.com\//i.test(project.uiMock) ? "Opens in Figma" : /lovable\.app/i.test(project.uiMock) ? "Opens in Lovable" : "Opens link"}
                             </TooltipContent>
                           </Tooltip>
                         )}

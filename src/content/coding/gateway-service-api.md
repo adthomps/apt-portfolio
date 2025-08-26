@@ -8,7 +8,6 @@ Tags: ["Cloudflare", "Node.js", "TypeScript"]
 Promo Image: /media/coding/cloud-api.png
 GitHub: https://github.com/adthomps
 LiveDemo: https://apt-anetrest-prototype-ui.pages.dev/
-UiMock: 
 
 ---
 

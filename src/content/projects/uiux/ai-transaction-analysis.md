@@ -1,11 +1,12 @@
 ---
 Title: AI Transaction & Risk Analysis
-Date: 2025-06-20
+Date: 2025-08-23
 Summary: A conceptual UI for an AI-assisted transaction search and AI analysis wiht OpenAI integration.
-Tags: ["Lovable", "React", "Vite", "Hono", "Cloudflare", "TypeScript", "shadcn/ui", "TailwindCSS"]
+Tags: ["Figma Make", "Lovable", "React", "Vite", "Hono", "Cloudflare", "TypeScript", "shadcn/ui", "TailwindCSS"]
 Promo Image: 
-UiMock: https://ai-transact-analyzer.lovable.app/
-GitHub: 
+UiMock-Figma: 
+UiMock-Lovable: https://ai-transact-analyzer.lovable.app/
+
 
 ---
 

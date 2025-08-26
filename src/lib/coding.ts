@@ -87,10 +87,25 @@ export function getAllCodingProjects(): CodingItem[] {
       summary: data.Summary || data.summary || "",
       category: data.Category || data.category || undefined,
       tags: (data.Tags as string[] | undefined) || (data.tags as string[] | undefined) || [],
-      promoImage: data["Promo Image"] || data.promoImage || data.promo || undefined,
+      promoImage:
+        data["Promo Image"] ||
+        data.promoImage ||
+        data.promo ||
+        (data["PromoImage"] as string | undefined) ||
+        undefined,
       github: data.GitHub || data.Github || data.github || undefined,
-      demo: data.LiveDemo || data.Demo || data.demo || undefined,
-      uiMock: data.UiMock || data.uiMock || undefined,
+      demo:
+        data.LiveDemo ||
+        data["LiveDemo"] ||
+        data.Demo ||
+        data.demo ||
+        undefined,
+      uiMock:
+        data["UiMock - Lovable"] ||
+        data["UiMock - Figma"] ||
+        data.UiMock ||
+        data.uiMock ||
+        undefined,
       status: data.Status || data.status || undefined,
       isLive: coerceLive(data.Live) ?? coerceLive(data.live) ?? coerceLive(data.Environment) ?? coerceLive(data.environment),
     } as CodingMeta;

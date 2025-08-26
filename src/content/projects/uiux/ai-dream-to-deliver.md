@@ -1,11 +1,11 @@
 ---
-Title: Dream to Deliver - Lovable
+Title: Dream to Deliver
 Date: 2025-06-20
 Summary: A conceptual experience dashboard powered by Lovable, visualizing the journey from project ideation to execution. Tailored for innovation leaders and product teams to track initiatives, outcomes, and user impact.
-Tags: ["Lovable", "React", "TailwindCSS"]
+Tags: ["Figma Make", "Lovable", "React", "TailwindCSS"]
 Promo Image: /media/projects/uiux/project-dream-lovable.png
-UiMock: https://apt-dream-to-deliver.lovable.app/
-GitHub: https://github.com/adthomps/apt-dream-to-deliver-lovable
+UiMock-Figma: https://apt-dream-to-deliver.lovable.app/
+UiMock-Lovable: 
 
 ---
 

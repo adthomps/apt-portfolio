@@ -8,7 +8,6 @@ Tags: ["Cloudflare", "OpenAI", "Hono", "TypeScript"]
 Promo Image: /media/coding/ai-support.png
 GitHub: https://github.com/adthomps
 LiveDemo: https://ai-support-bot.pages.dev/
-UiMock: 
 
 ---
 

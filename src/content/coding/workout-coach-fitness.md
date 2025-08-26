@@ -4,13 +4,10 @@ Date: 2025-06-20
 Summary: Chat-style trainer that builds programs, logs lifts, and nudges users toward PRs and protein goals.
 Status: On-Hold
 Category: Cloud
-Tags:
-  - Cloudflare
-  - OpenAI
+Tags: ["Cloudflare", "OpenAI"]
 Promo Image: 
 GitHub: https://github.com/adthomps
 LiveDemo: 
-UiMock: https://apt-fitness-ai-concept.lovable.app/
 
 ---
 

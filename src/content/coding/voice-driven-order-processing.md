@@ -8,7 +8,6 @@ Tags: ["Cloudflare", "OpenAI"]
 Promo Image: /media/coding/ai-order.png
 GitHub: https://github.com/adthomps
 LiveDemo: https://ai-voice-order-system.pages.dev/
-UiMock: 
 
 ---
 

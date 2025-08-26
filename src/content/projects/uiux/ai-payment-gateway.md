@@ -1,11 +1,11 @@
 ---
-Title: AI Payment Gateway - Figma Make
+Title: Payment Gateway
 Date: 2025-06-20
 Summary: A conceptual UI for an AI-assisted payment gateway platform. Designed in Figma Maker, this prototype visualizes merchant onboarding, transaction search, fraud review, and OpenAI-powered support integration.
-Tags: ["Figma Make", "React", "TailwindCSS"]
+Tags: ["Figma Make", "Lovable", "TailwindCSS"]
 Promo Image: /media/projects/uiux/project-payment-gateway-figma.png
-UiMock: https://peach-orbit-27497554.figma.site
-GitHub: 
+UiMock-Figma: https://peach-orbit-27497554.figma.site
+UiMock-Lovable: https://api-gateway-concept1.lovable.app/
 
 ---
 
